@@ -1,0 +1,72 @@
+# Simplified tank config for Stage 1 testing
+# Compatible with toml4j 0.7.2
+
+[identity]
+name = "HeavyTank"
+display_name = "Heavy Tank"
+category = "AFV"
+owner = "Republic"
+nominal = false
+insignificant = false
+legal_target = true
+selectable = true
+radar_visible = true
+radar_invisible = false
+cloakable = false
+cloak_stop = false
+type = "unit"
+
+[stats]
+strength = 400
+armor = "heavy"
+sight = 6
+guard_range = 8.0
+speed = 5.0
+rot = 5.0
+cost = 1000
+points = 25
+tech_level = 7
+build_limit = -1
+build_time = 12.0
+
+[prerequisites]
+prerequisite = ["barracks", "weapons_factory"]
+buildings_required = 2
+
+[veterancy]
+trainable = true
+veteran_abilities = ["FASTER", "STRONGER", "FIREPOWER", "SIGHT"]
+elite_abilities = ["ROF", "SELF_HEAL", "SCATTER"]
+
+[combat]
+primary_weapon = "125mm_cannon"
+secondary_weapon = "coaxial_mg"
+elite_primary = "125mm_cannon_elite"
+elite_secondary = "coaxial_mg_elite"
+ammo = -1
+reload_time = 0.0
+manual_reload = false
+fire_angle = 64
+target_laser = false
+deploy_to_fire = false
+no_moving_fire = false
+
+[passengers]
+passengers = 0
+
+[movement]
+locomotor = "tracks"
+crushable = false
+crusher = true
+carries_crate = false
+
+[turrets]
+turret = true
+turret_spins = false
+turret_rotation_yaw = [-180, 180]
+turret_rotation_speed = 5.0
+barrel_elevation_pitch = [-5, 45]
+barrel_speed = 4.0
+
+[special_flags]
+harvester = false

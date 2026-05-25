@@ -1,0 +1,38 @@
+[identity]
+name = "War Factory"
+type = "building"
+category = "production"
+icon = "icon.png"
+build_cost = 2000
+build_time = 15
+
+[stats]
+health = 1200
+armor_type = "heavy"
+sight_range = 4
+power_required = 50     # if using power system
+power_provided = 0
+
+[production]
+queue_size = 5
+produces = [
+    "light_tank",
+    "heavy_tank",
+    "harvester",
+    "apc"
+]
+
+[weapon.defense]  # optional for guard towers
+name = "rocket_pod"
+type = "projectile"
+damage = 45
+damage_type = "explosive"
+range = 14.0
+cooldown = 1.5
+turret_pivot = "TurretPivot"
+
+[docking]
+enabled = true
+dock_type = "refinery"
+unload_speed = 100      # resources per second
+harvester_queue = true  # harvesters line up

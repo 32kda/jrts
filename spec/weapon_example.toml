@@ -1,0 +1,20 @@
+# weapons/artillery_cannon.toml
+# Can be defined separately to be reusable or
+# in unit definition if used only by given unit
+[weapon]
+name = "155mm_howitzer"
+type = "projectile"
+projectile_scene = "res://projectiles/artillery_shell.tscn"
+damage = 150
+damage_type = "explosive"
+area_damage = true
+explosion_radius = 3.0
+range = 25.0
+cooldown = 4.0
+min_range = 5.0          # can't fire too close
+ballistic_arc = 0.5      # 0 = flat, 1 = high arc
+accuracy = 0.95          # chance to hit, rest is scatter
+scatter_radius = 1.5
+particle_speed = 12      # speed of shell moving through the arc. Should speed and arc be one parameter?
+shooting_correction = true # if particle-based weapon, like artillery, will try to calculate where target would be when shell will hit the ground
+homing = false           # true for weapons like guided missles

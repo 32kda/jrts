@@ -1,0 +1,106 @@
+# tank_config.toml - Full Tiberian Sun inspired configuration
+
+[identity]
+name = "HeavyTank"
+display_name = "Heavy Tank"          # Name shown in UI
+category = "AFV"                       # Soldier, Civilian, VIP, Ship, Recon, AFV, IFV, LRFS, Support, Transport, AirPower, AirLift
+owner = "Republic"                     # For now only Republic or Civilian, later more could be added
+nominal = false                        # Always use given name rather than "enemy object"
+insignificant = false                  # Don't announce when destroyed
+legal_target = true                    # Allowed to be combat target
+selectable = true                      # Can be selected by player
+radar_visible = true                   # Visible on radar even under shroud
+radar_invisible = false                # Invisible on radar maps
+cloakable = false                      # Equipped with cloaking device
+cloak_stop = false                     # Cloak when stopped moving
+
+[stats]
+strength = 400                         # Hit points
+armor = "heavy"                        # none, wood, light, heavy, concrete
+sight = 6                              # Sight range in cells
+guard_range = 8                        # Distance to scan for enemies (default = weapon range)
+speed = 5.0                            # Movement speed
+rot = 5                                # Rate of turn (degrees per second)
+cost = 1000                            # Cost in credits
+points = 25                            # Scoring value
+tech_level = 7                         # Tech level required (-1 = can't build). Just a stub for now, later could be rethought to use tech tree instead
+build_limit = -1                       # Maximum allowed to build per house (-1 = unlimited)
+build_time = 12.0                      # Seconds to build
+
+[prerequisites]
+prerequisite = ["barracks", "weapons_factory"]  # Buildings needed before production, in future could require more complex conditions
+buildings_required = 2                 # Number of prerequisite buildings needed
+
+# In future this could be discarded or re-thought.
+# A basic idea behind this is maing unit more powerful for destoying enemy units
+[veterancy]
+trainable = true                       # Can become veteran by experience
+veteran_abilities = ["FASTER", "STRONGER", "FIREPOWER", "SIGHT"]
+elite_abilities = ["ROF", "SELF_HEAL", "SCATTER"]
+
+[combat]
+primary_weapon = "125mm_cannon"
+secondary_weapon = "coaxial_mg"
+elite_primary = "125mm_cannon_elite"   # Weapon when elite
+elite_secondary = "coaxial_mg_elite"
+ammo = -1                              # Number of rounds (-1 = unlimited)
+reload_time = 0.0                      # Time between reloads
+manual_reload = false                  # Must reload by coordinating with reloader building
+fire_angle = 64                        # Pitch of projectile launch (64 = horizontal, 0 = vertical)
+target_laser = false                   # Has targeting laser
+deploy_to_fire = false                 # Must deploy before firing
+no_moving_fire = false                 # Must stop before firing
+
+[abilities]
+deploy = {
+    enabled = false,
+    deploy_time = 0.5,                 # Time in minutes to deploy/undeploy
+    on_deploy = [
+        { type = "enable_weapon", weapon = "primary" },
+        { type = "modify_stat", stat = "speed", value = 0 }
+    ]
+}
+
+docking = {
+    enabled = false,
+    dock_type = "refinery",            # Preferred docking building
+    unload_time = 1.0,
+    resource_capacity = 1000
+}
+
+[passengers]
+passengers = 0                         # Number of passengers it may carry, 0 by default
+
+[audio]
+voice_select = ["tank_select_1", "tank_select_2"]
+voice_move = ["tank_move_1", "tank_move_2"]
+voice_attack = ["tank_attack_1", "tank_attack_2"]
+voice_die = ["tank_die_1"]
+voice_feedback = ["tank_hit_1"]
+voice_comment = ["tank_idle_1", "tank_idle_2"]  # Idle voices
+crush_sound = "crush_tank"             # Sound when crushed
+
+[movement]
+locomotor = "tracks"                   # tracks, wheels, walker...
+crushable = false                      # Can be crushed by heavy tracked vehicles
+crusher = true                         # Can crush infantry
+carries_crate = false                  # Drops crate when destroyed
+
+[turrets]
+turret = true                          # Equipped with turret, false by default, but will be set to true if imported model has 'turret' node
+turret_spins = false                   # Turret spins idly
+turret_rotation_yaw = [-180, 180]
+turret_rotation_speed = 5.0            # ROT for turret (same as body if not specified)
+barrel_elevation_pitch = [-5, 45]
+barrel_speed = 4.0
+
+[building_interactions]  # For harvester/refinery relationships
+dock = "refinery"                      # Preferred docking building
+free_unit = "harvester"                # Free unit given when building built (for refinery)
+unit_reload = false                    # Building reloads units on dock
+unit_repair = false                    # Building repairs units on dock
+dock_unload = false                    # Should unload when docking
+
+[special_flags]
+harvester = false                      # Special resource harvesting rules
+
