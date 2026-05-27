@@ -3,6 +3,7 @@ package com.jrts.tools.importer;
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.scene.Node;
+import com.jme3.scene.plugins.gltf.GlbLoader;
 import com.jme3.scene.plugins.gltf.GltfLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,8 +157,12 @@ public class BatchImporter {
     private static com.jme3.asset.AssetManager createAssetManager() {
         com.jme3.system.JmeSystem.setLowPermissions(false);
         DesktopAssetManager desktopAssetManager = new DesktopAssetManager();
+        desktopAssetManager.registerLocator("/", com.jme3.asset.plugins.ClasspathLocator.class);
         desktopAssetManager.registerLocator("", FileLocator.class);
-        desktopAssetManager.registerLoader(GltfLoader.class, "glb");
+        desktopAssetManager.registerLoader(com.jme3.material.plugins.J3MLoader.class, "j3md", "j3m");
+        desktopAssetManager.registerLoader(com.jme3.texture.plugins.AWTLoader.class, "png", "jpg", "jpeg", "gif", "bmp");
+        desktopAssetManager.registerLoader(GlbLoader.class, "glb");
+        desktopAssetManager.registerLoader(GltfLoader.class, "gltf");
         return desktopAssetManager;
     }
 }
