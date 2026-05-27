@@ -1,6 +1,9 @@
 package com.jrts.tools.importer;
 
+import com.jme3.asset.DesktopAssetManager;
+import com.jme3.asset.plugins.FileLocator;
 import com.jme3.scene.Node;
+import com.jme3.scene.plugins.gltf.GltfLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,7 +100,7 @@ public class BatchImporter {
                     succeeded++;
                     log.info("  OK: {}", outputFile.getFileName());
                 } catch (ImportException e) {
-                    log.error("  ERROR: {}", e.getMessage());
+                    log.error("  ERROR: {}", e.getMessage(), e);
                     errors++;
                 } catch (Exception e) {
                     log.error("  ERROR processing {}: {}", glbFile, e.getMessage(), e);
@@ -140,7 +143,7 @@ public class BatchImporter {
         Files.list(dir).forEach(p -> {
             String name = p.getFileName().toString().toLowerCase();
             if (name.endsWith(".glb")) {
-                result.add(p.toAbsolutePath().toString());
+                result.add(p.toString());
             } else if (Files.isDirectory(p) && !name.startsWith(".")) {
                 try {
                     findGlbRecursive(p, result);
@@ -150,14 +153,11 @@ public class BatchImporter {
         });
     }
 
-    /**
-     * Create a minimal AssetManager for headless importer use.
-     */
     private static com.jme3.asset.AssetManager createAssetManager() {
         com.jme3.system.JmeSystem.setLowPermissions(false);
-        return com.jme3.asset.plugins.ClasspathLocator.class.getClassLoader()
-                .getResource("com/jme3/asset/Desktop.cfg") != null
-                ? new com.jme3.asset.DesktopAssetManager()
-                : new com.jme3.asset.DesktopAssetManager();
+        DesktopAssetManager desktopAssetManager = new DesktopAssetManager();
+        desktopAssetManager.registerLocator("", FileLocator.class);
+        desktopAssetManager.registerLoader(GltfLoader.class, "glb");
+        return desktopAssetManager;
     }
 }

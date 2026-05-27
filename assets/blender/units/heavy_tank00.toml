@@ -1,0 +1,27 @@
+[unit]
+name = "Heavy Tank"
+speed = 4.0
+stop_distance = 0.5
+
+[health]
+max = 250
+armor = 3
+
+[weapon]
+damage = 50
+range = 20.0
+cooldown = 2.5
+projectile_scene = "res://projectiles/shell.tscn"
+
+[collision]
+type = "cylinder"  # cylinder, box, capsule
+radius = 1.5
+height = 1.2
+
+[selection]
+selection_scale = 1.2
+
+[layout]
+chassis_node = "TankBody"
+turret_pivot = "TurretPivot"
+muzzle_node = "Muzzle"

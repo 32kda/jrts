@@ -36,7 +36,7 @@ public class GltfImporter {
         }
 
         try {
-            Spatial loaded = assetManager.loadModel(glbPath.toUri().toString());
+            Spatial loaded = assetManager.loadModel(glbPath.toString());
             if (loaded == null) {
                 throw new ImportException("AssetManager returned null for: " + glbPath);
             }
