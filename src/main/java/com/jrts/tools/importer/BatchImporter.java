@@ -70,7 +70,7 @@ public class BatchImporter {
 
             GltfImporter gltfImporter = new GltfImporter();
             EmptyNodeResolver resolver = new EmptyNodeResolver();
-            CollisionBaker baker = new CollisionBaker();
+            CollisionPostProcessor postProcessor = new CollisionPostProcessor();
             M3oExporter exporter = new M3oExporter();
 
             for (String glbFile : glbFiles) {
@@ -89,8 +89,7 @@ public class BatchImporter {
 
                     ModelManifest manifest = resolver.resolve(rootNode);
 
-                    ModelManifest.CollisionShapeData collision = baker.bakeAABB(rootNode);
-                    manifest.setCollision(collision);
+                    postProcessor.process(rootNode, manifest, glbPath);
 
                     String modelName = glbPath.getFileName().toString().replace(".glb", "");
                     manifest.setModelName(modelName);

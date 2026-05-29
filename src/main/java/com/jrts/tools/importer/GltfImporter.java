@@ -66,13 +66,13 @@ public class GltfImporter {
         Path binPath = parentDir.resolve(modelName + "_tmp.bin");
 
         try {
-//            convertGlbToGltf(glbPath, gltfPath, binPath);
-//
-//            String parentDirStr = parentDir.toString();
-//            String gltfFileName = gltfPath.getFileName().toString();
-//            assetManager.registerLocator(parentDirStr, com.jme3.asset.plugins.FileLocator.class);
+            convertGlbToGltf(glbPath, gltfPath, binPath);
 
-            Spatial loaded = assetManager.loadModel(glbPath.toString());
+            String parentDirStr = parentDir.toString();
+            String gltfFileName = gltfPath.getFileName().toString();
+            assetManager.registerLocator(parentDirStr, com.jme3.asset.plugins.FileLocator.class);
+
+            Spatial loaded = assetManager.loadModel(gltfFileName);
             if (loaded == null) {
                 throw new ImportException("AssetManager returned null for: " + glbPath);
             }

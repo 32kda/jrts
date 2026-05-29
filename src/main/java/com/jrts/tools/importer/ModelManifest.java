@@ -14,6 +14,7 @@ public class ModelManifest {
     private Map<NodeRole, String> roles = new EnumMap<>(NodeRole.class);
 
     private CollisionShapeData collision;
+    private float visibilitySphereRadius;
 
     private List<AnimationClipInfo> animations = new ArrayList<>();
     private List<BoneSlotInfo> boneSlots = new ArrayList<>();
@@ -58,6 +59,14 @@ public class ModelManifest {
         this.collision = collision;
     }
 
+    public float getVisibilitySphereRadius() {
+        return visibilitySphereRadius;
+    }
+
+    public void setVisibilitySphereRadius(float visibilitySphereRadius) {
+        this.visibilitySphereRadius = visibilitySphereRadius;
+    }
+
     public List<AnimationClipInfo> getAnimations() {
         return Collections.unmodifiableList(animations);
     }
@@ -78,7 +87,12 @@ public class ModelManifest {
             String type,
             float[] center,
             float[] halfExtents,
-            float radius) {
+            float radius,
+            float height) {
+
+        public CollisionShapeData(String type, float[] center, float[] halfExtents, float radius) {
+            this(type, center, halfExtents, radius, 0f);
+        }
     }
 
     public record AnimationClipInfo(

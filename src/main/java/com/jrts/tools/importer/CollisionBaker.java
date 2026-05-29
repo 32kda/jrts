@@ -59,7 +59,7 @@ public class CollisionBaker {
         Vector3f center = min.add(max).multLocal(0.5f);
         Vector3f halfExtents = max.subtract(min).multLocal(0.5f);
 
-        log.info("Baked AABB: center=({:.2f},{:.2f},{:.2f}), halfExtents=({:.2f},{:.2f},{:.2f})",
+        log.info("Baked AABB: center=({},{},{}), halfExtents=({},{},{})",
                 center.x, center.y, center.z,
                 halfExtents.x, halfExtents.y, halfExtents.z);
 
@@ -77,7 +77,7 @@ public class CollisionBaker {
         float[] he = aabb.halfExtents();
         float radius = Math.max(Math.max(he[0], he[1]), he[2]);
 
-        log.info("Baked radius: {:.2f} from AABB halfExtents=({:.2f},{:.2f},{:.2f})",
+        log.info("Baked radius: {} from AABB halfExtents=({},{},{})",
                 radius, he[0], he[1], he[2]);
 
         return new ModelManifest.CollisionShapeData("radial",
