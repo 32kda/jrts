@@ -26,3 +26,6 @@ replay_pid*
 build/
 target/
 .gradle/
+
+# Intermediate build artifacts for model import
+assets/models/intermediate/
