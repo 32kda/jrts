@@ -106,7 +106,8 @@ class UnitRegistryTest {
                 new PassengersSection(0),
                 new AudioSection(null, null, null, null, null, null, ""),
                 new MovementSection("tracks", false, false, false),
-                new TurretsSection(false, false, null, 0f, null, 0f),
+                new TurretsSection(false, false, null, 0f, null, 0f,
+                        false, 0f, 0f, 0f, 0f, 0f, 5f, 2f),
                 new BuildingInteractionsSection("", "", false, false, false),
                 new SpecialFlagsSection(false));
 

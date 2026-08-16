@@ -1,6 +1,7 @@
 package com.jrts.unit;
 
 import com.jrts.config.UnitConfig;
+import com.jrts.docking.DockTarget;
 import com.jrts.tools.importer.ModelManifest;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -17,19 +18,21 @@ import java.util.List;
  * The JME Spatial is the visual representation. Unit wraps it
  * and provides game-level state (health, flags, selection status).
  */
-public class Unit {
+public class Unit implements DockTarget {
 
     private final int id;
     private final UnitConfig config;
     private final Node spatial;
     private final int flags;
 
+    private int owner;
     private float bodyYaw;
     private boolean selected;
     private int health;
     private List<Vector3f> waypoints;
 
     private Node turretPivotNode;
+    private Node barrelPivotNode;
     private Node muzzleNode;
 
     private boolean wasAirborne;
@@ -40,6 +43,7 @@ public class Unit {
         this.config = config;
         this.spatial = spatial;
         this.flags = flags;
+        this.owner = 0;
         this.health = config.stats().strength();
         this.waypoints = new ArrayList<>();
     }
@@ -50,6 +54,14 @@ public class Unit {
 
     public int getFlags() {
         return flags;
+    }
+
+    public int getOwner() {
+        return owner;
+    }
+
+    public void setOwner(int owner) {
+        this.owner = owner;
     }
 
     public UnitConfig getConfig() {
@@ -93,12 +105,25 @@ public class Unit {
         this.health = health;
     }
 
+    @Override
+    public int getMaxHealth() {
+        return config.stats().strength();
+    }
+
     public Node getTurretPivot() {
         return turretPivotNode;
     }
 
     public void setTurretPivot(Node node) {
         this.turretPivotNode = node;
+    }
+
+    public Node getBarrelPivot() {
+        return barrelPivotNode;
+    }
+
+    public void setBarrelPivot(Node node) {
+        this.barrelPivotNode = node;
     }
 
     public Node getMuzzle() {

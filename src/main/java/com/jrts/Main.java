@@ -1,19 +1,28 @@
 package com.jrts;
 
+import com.jrts.building.BuildingFactory;
+import com.jrts.building.BuildingRegistry;
 import com.jrts.camera.RtsCamera;
 import com.jrts.camera.RtsCameraInputListener;
 import com.jrts.config.ConfigLoader;
 import com.jrts.input.*;
-import com.jrts.movement.MovementController;
+import com.jrts.map.MapDefinition;
+import com.jrts.map.MapLoader;
+import com.jrts.movement.AStarNavigation;
+import com.jrts.movement.LocalAvoidance;
 import com.jrts.movement.NavigationService;
-import com.jrts.movement.SimpleLineNavigation;
 import com.jrts.movement.TerrainSnapping;
+import com.jrts.pathfinding.HpaPathfinder;
+import com.jrts.pathfinding.PathSmoother;
+import com.jrts.pathfinding.SurfaceMask;
+import com.jrts.pathfinding.TraversalProfile;
 import com.jrts.rendering.ModelLoader;
-import com.jrts.scene.FlatTerrainHeightProvider;
+import com.jrts.scene.ObstacleRenderer;
 import com.jrts.scene.SceneBootstrapper;
 import com.jrts.scene.TerrainHeightProvider;
+import com.jrts.scene.TestMap;
 import com.jrts.selectable.SelectionHighlight;
-import com.jrts.turret.TurretController;
+import com.jrts.turret.TurretControl;
 import com.jrts.unit.Unit;
 import com.jrts.unit.UnitFactory;
 import com.jrts.unit.UnitRegistry;
@@ -23,15 +32,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Main entry point. Extends JME's SimpleApplication.
  *
- * Orchestrates initialization, wires all subsystems together,
- * and runs the main update loop.
- *
- * This is the ONLY class that "knows about everything" — it acts as
- * the composition root (DI container). It does NOT contain business logic.
+ * This is the composition root (DI container): it wires subsystems together and owns the
+ * update loop. It contains no business logic — the map is loaded from a JSON file by
+ * {@link MapLoader}, the navigation algorithm by {@link com.jrts.pathfinding}, and per-unit
+ * behaviour (movement, turret) runs via JME Controls attached to each spatial (Composite).
  */
 public class Main extends SimpleApplication {
 
@@ -45,10 +55,9 @@ public class Main extends SimpleApplication {
     private SelectionSystem selectionSystem;
     private SelectionHighlight selectionHighlight;
     private CommandDispatcher commandDispatcher;
-    private MovementController movementController;
     private TerrainSnapping terrainSnapping;
-    private TurretController turretController;
     private NavigationService navigationService;
+    private LocalAvoidance localAvoidance;
     private TerrainHeightProvider terrainProvider;
     private UnitFactory unitFactory;
     private UnitRegistry unitRegistry;
@@ -65,14 +74,19 @@ public class Main extends SimpleApplication {
         flyCam.setEnabled(false);
 
         unitRegistry = new UnitRegistry();
-        unitFactory = new UnitFactory(unitRegistry);
+        BuildingRegistry buildingRegistry = new BuildingRegistry();
 
-        float mapSize = 500f;
-        terrainProvider = new FlatTerrainHeightProvider(0f, mapSize);
+        MapDefinition map = loadMap();
+        terrainProvider = map.terrain();
 
-        movementController = new MovementController(terrainProvider);
+        unitFactory = new UnitFactory(unitRegistry, terrainProvider);
+        BuildingFactory buildingFactory = new BuildingFactory(buildingRegistry);
+
+        TraversalProfile tankProfile = new TraversalProfile(SurfaceMask.GROUND, 1f, 2);
+        navigationService = new AStarNavigation(map.grid(), new HpaPathfinder(), new PathSmoother(),
+                terrainProvider, tankProfile);
+        localAvoidance = new LocalAvoidance(3f);
         terrainSnapping = new TerrainSnapping(terrainProvider);
-        navigationService = new SimpleLineNavigation(terrainProvider);
 
         rtsCamera = new RtsCamera(cam);
         rtsCamera.setTerrainProvider(terrainProvider);
@@ -86,8 +100,6 @@ public class Main extends SimpleApplication {
         selectionSystem.addObserver(selectionHighlight);
 
         commandDispatcher = new CommandDispatcher(selectionSystem, mousePicker, navigationService);
-
-        turretController = new TurretController();
 
         actionMapper = new ActionMapper();
         actionMapper.addHandler(selectionSystem);
@@ -104,10 +116,27 @@ public class Main extends SimpleApplication {
 
         SceneBootstrapper sceneBootstrapper = new SceneBootstrapper(
                 rootNode, assetManager, viewPort, configLoader, modelLoader,
-                unitFactory, mapSize);
+                unitFactory, buildingFactory, terrainProvider);
+        sceneBootstrapper.setNavigationService(navigationService);
         sceneBootstrapper.bootstrap();
+        sceneBootstrapper.spawnUnits(map.units());
+        sceneBootstrapper.spawnBuildings(map.buildings());
+
+        new ObstacleRenderer(rootNode, assetManager).render(map.obstacles());
 
         log.info("=== Dune RTS Stage 1 Ready ===");
+    }
+
+    private MapDefinition loadMap() {
+        Path mapFile = Path.of("assets/maps/test_map.json");
+        try {
+            return new MapLoader().load(mapFile);
+        } catch (Exception e) {
+            log.error("Failed to load map {}, falling back to TestMap", mapFile, e);
+            TestMap testMap = new TestMap();
+            return new MapDefinition(testMap.terrain(), testMap.grid(), testMap.obstacles(),
+                    List.of(), List.of(), List.of(), List.of());
+        }
     }
 
     @Override
@@ -120,16 +149,22 @@ public class Main extends SimpleApplication {
 
         Vector3f cursorWorldPos = mousePicker.pickTerrain(mouseX, mouseY).orElse(null);
 
+        // Cross-unit systems. Per-unit movement and turret behaviour run via JME Controls
+        // attached to each spatial (Composite pattern), driven by the scene-graph traversal.
         terrainSnapping.clampAll(unitRegistry);
+        localAvoidance.separate(unitRegistry.allUnits());
 
-        for (Unit unit : selectionSystem.getSelected()) {
-            if (unit.hasTurret() && cursorWorldPos != null) {
-                turretController.update(unit, cursorWorldPos, tpf);
+        // Feed aim targets into each unit's turret control.
+        Set<Unit> selected = selectionSystem.getSelected();
+        for (Unit unit : unitRegistry.allUnits()) {
+            TurretControl control = unit.getSpatial().getControl(TurretControl.class);
+            if (control == null) {
+                continue;
             }
-
-            if (unit.canMove() && unit.getWaypoints() != null
-                    && !unit.getWaypoints().isEmpty()) {
-                movementController.update(unit, tpf);
+            if (selected.contains(unit) && cursorWorldPos != null) {
+                control.setTarget(cursorWorldPos);
+            } else {
+                control.clearTarget();
             }
         }
     }

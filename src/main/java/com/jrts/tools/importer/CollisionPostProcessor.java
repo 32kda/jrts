@@ -169,7 +169,11 @@ public class CollisionPostProcessor {
         }
         String[] parts = path.split("/");
         Node current = root;
-        for (int i = 0; i < parts.length; i++) {
+        int start = 0;
+        if (root.getName() != null && parts[0].equals(root.getName())) {
+            start = 1;
+        }
+        for (int i = start; i < parts.length; i++) {
             String part = parts[i];
             if (part.isEmpty()) {
                 continue;

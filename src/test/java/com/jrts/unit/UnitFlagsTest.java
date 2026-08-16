@@ -52,8 +52,9 @@ class UnitFlagsTest {
                 100, 10, 1, -1, 10f);
         TurretsSection turrets = hasTurret
                 ? new TurretsSection(true, false, Arrays.asList(-180f, 180f), 5f,
-                Arrays.asList(-5f, 45f), 4f)
-                : new TurretsSection(false, false, null, 0f, null, 0f);
+                Arrays.asList(-5f, 45f), 4f, true, 0f, 0f, 0f, -15f, 15f, 5f, 2f)
+                : new TurretsSection(false, false, null, 0f, null, 0f,
+                false, 0f, 0f, 0f, 0f, 0f, 5f, 2f);
         MovementSection movement = new MovementSection("tracks", false, true, false);
         CombatSection combat = new CombatSection("", "", "", "", -1, 0f, false, 64, false, false, false);
 

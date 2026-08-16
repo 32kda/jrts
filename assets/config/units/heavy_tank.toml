@@ -51,22 +51,19 @@ target_laser = false                   # Has targeting laser
 deploy_to_fire = false                 # Must deploy before firing
 no_moving_fire = false                 # Must stop before firing
 
-[abilities]
-deploy = {
-    enabled = false,
-    deploy_time = 0.5,                 # Time in minutes to deploy/undeploy
-    on_deploy = [
-        { type = "enable_weapon", weapon = "primary" },
-        { type = "modify_stat", stat = "speed", value = 0 }
-    ]
-}
+[abilities.deploy]
+enabled = false
+deploy_time = 0.5                       # Time in minutes to deploy/undeploy
+on_deploy = [
+    { type = "enable_weapon", weapon = "primary" },
+    { type = "modify_stat", stat = "speed", value = 0 }
+]
 
-docking = {
-    enabled = false,
-    dock_type = "refinery",            # Preferred docking building
-    unload_time = 1.0,
-    resource_capacity = 1000
-}
+[abilities.docking]
+enabled = false
+dock_type = "refinery"                  # Preferred docking building
+unload_time = 1.0
+resource_capacity = 1000
 
 [passengers]
 passengers = 0                         # Number of passengers it may carry, 0 by default
@@ -93,6 +90,14 @@ turret_rotation_yaw = [-180, 180]
 turret_rotation_speed = 5.0            # ROT for turret (same as body if not specified)
 barrel_elevation_pitch = [-5, 45]
 barrel_speed = 4.0
+allows_pitch = true                    # Barrel can tilt up/down (howitzers/artillery)
+natural_turret_angle = 0               # Resting yaw, degrees
+natural_turret_pitch = 0               # Resting barrel pitch, degrees
+fire_pitch = 0                         # Fixed fire pitch, degrees (0 = aim directly at target)
+min_idle_scan_angle = -15              # Idle scan offset, degrees
+max_idle_scan_angle = 15               # Idle scan offset, degrees
+idle_scan_interval = 5.0               # Seconds between idle scans
+recenter_time = 2.0                    # Seconds to hold before recentering
 
 [building_interactions]  # For harvester/refinery relationships
 dock = "refinery"                      # Preferred docking building

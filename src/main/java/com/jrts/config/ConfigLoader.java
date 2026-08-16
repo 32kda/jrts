@@ -237,7 +237,15 @@ public class ConfigLoader {
                 safeGetFloatList(toml, "turrets.turret_rotation_yaw", Arrays.asList(-180f, 180f)),
                 safeGetFloat(toml, "turrets.turret_rotation_speed", 5.0),
                 safeGetFloatList(toml, "turrets.barrel_elevation_pitch", Arrays.asList(-5f, 45f)),
-                safeGetFloat(toml, "turrets.barrel_speed", 4.0)
+                safeGetFloat(toml, "turrets.barrel_speed", 4.0),
+                toml.getBoolean("turrets.allows_pitch", false),
+                safeGetFloat(toml, "turrets.natural_turret_angle", 0.0),
+                safeGetFloat(toml, "turrets.natural_turret_pitch", 0.0),
+                safeGetFloat(toml, "turrets.fire_pitch", 0.0),
+                safeGetFloat(toml, "turrets.min_idle_scan_angle", 0.0),
+                safeGetFloat(toml, "turrets.max_idle_scan_angle", 0.0),
+                safeGetFloat(toml, "turrets.idle_scan_interval", 5.0),
+                safeGetFloat(toml, "turrets.recenter_time", 2.0)
         );
     }
 
@@ -325,7 +333,9 @@ public class ConfigLoader {
                 toml.getBoolean("docking.harvester_queue", false)
         );
 
-        return new BuildingConfig(identity, stats, production, defenseWeapon, docking);
+        TurretsSection turrets = toml.contains("turrets") ? parseTurrets(toml) : null;
+
+        return new BuildingConfig(identity, stats, production, defenseWeapon, docking, turrets);
     }
 
     @SuppressWarnings("unchecked")

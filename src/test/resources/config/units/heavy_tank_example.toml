@@ -67,6 +67,14 @@ turret_rotation_yaw = [-180, 180]
 turret_rotation_speed = 5.0
 barrel_elevation_pitch = [-5, 45]
 barrel_speed = 4.0
+allows_pitch = true
+natural_turret_angle = 0
+natural_turret_pitch = 0
+fire_pitch = 0
+min_idle_scan_angle = -15
+max_idle_scan_angle = 15
+idle_scan_interval = 5.0
+recenter_time = 2.0
 
 [special_flags]
 harvester = false

@@ -74,7 +74,7 @@ public class RtsCamera {
         float sinYaw = FastMath.sin(yaw);
         float scale = panSpeed * (distance / 50f);
 
-        pivot.x += (-cosYaw * dx - sinYaw * dy) * scale;
+        pivot.x += (cosYaw * dx + sinYaw * dy) * scale;
         pivot.z += (-sinYaw * dx + cosYaw * dy) * scale;
 
         if (boundsEnabled && terrain != null) {

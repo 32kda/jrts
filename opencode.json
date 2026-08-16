@@ -1,0 +1,10 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "java-code-model-mcp": {
+      "type": "local",
+      "command": ["java","-jar","e:/util/java_code_model_mcp/java-code-model-mcp-0.1.0a.jar"],
+      "enabled": true
+    }
+  }
+}

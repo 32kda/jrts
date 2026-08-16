@@ -58,6 +58,14 @@ class ConfigLoaderTest {
         assertEquals(2, cfg.turrets().turretRotationYaw().size());
         assertEquals(2, cfg.turrets().barrelElevationPitch().size());
 
+        assertTrue(cfg.turrets().allowsPitch());
+        assertEquals(0f, cfg.turrets().naturalTurretAngle(), 0.001f);
+        assertEquals(0f, cfg.turrets().firePitch(), 0.001f);
+        assertEquals(-15f, cfg.turrets().minIdleScanAngle(), 0.001f);
+        assertEquals(15f, cfg.turrets().maxIdleScanAngle(), 0.001f);
+        assertEquals(5.0f, cfg.turrets().idleScanInterval(), 0.001f);
+        assertEquals(2.0f, cfg.turrets().recenterTime(), 0.001f);
+
         assertEquals(-180f, cfg.turrets().turretRotationYaw().get(0), 0.001f);
         assertEquals(180f, cfg.turrets().turretRotationYaw().get(1), 0.001f);
 

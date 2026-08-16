@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "name": "Test Map",
+  "terrain": {
+    "size": 1000,
+    "cellSize": 1.0,
+    "waterLevel": -1000.0
+  },
+  "objects": [
+    {
+      "type": "box",
+      "center": [30, 0],
+      "size": [10, 10],
+      "yaw": 0.0,
+      "height": 5.0
+    },
+    {
+      "type": "cylinder",
+      "center": [-20, 20],
+      "radius": 5.0,
+      "height": 5.0
+    },
+    {
+      "type": "box",
+      "center": [30, -20],
+      "size": [40, 2],
+      "yaw": 0.0,
+      "height": 5.0
+    }
+  ],
+  "decorations": [],
+  "logical": [
+    {
+      "name": "player_start_zone",
+      "type": "box",
+      "center": [0, 0],
+      "size": [60, 60]
+    }
+  ],
+  "buildings": [
+    {
+      "type": "war_factory",
+      "owner": 1,
+      "position": [100, 0, 50],
+      "yaw": 0.0
+    }
+  ],
+  "units": [
+    {
+      "type": "heavy_tank",
+      "owner": 1,
+      "position": [0, 0, 0],
+      "yaw": 0.5
+    }
+  ]
+}
